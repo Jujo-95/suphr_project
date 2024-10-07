@@ -5,11 +5,11 @@ from datetime import datetime
 import numpy as np
 
 def upload_employees():
-    csv_location = f"app\data\hired_employees.csv"
+    csv_location = f"app/data/hired_employees.csv"
     url = "http://127.0.0.1:8000/upload-employees"
     column_names = ["id", "name", "datetime", "department_id", "job_id"]
     employees = pd.read_csv(csv_location, names=column_names, header=None, index_col=None)
-
+    print(employees.head())
     #process raw data
     employees = employees.replace([np.inf, -np.inf], np.nan)
     employees["id"] = employees["id"].fillna(0)
@@ -17,7 +17,7 @@ def upload_employees():
     employees["department_id"] = employees["department_id"].fillna(0)
     employees["job_id"] = employees["job_id"].fillna(0)
 
-    employees['datetime'] = pd.to_datetime(employees['datetime'], errors='coerce')  # Convierte a datetime, NaT para valores no válidos
+    employees['datetime'] = pd.to_datetime(employees['datetime'], errors='coerce')  
     employees['datetime'] = employees['datetime'].fillna(pd.NaT).apply(lambda x: x.isoformat() if pd.notna(x) else '')
 
     employees_head = employees.to_dict(orient='records')
@@ -26,7 +26,7 @@ def upload_employees():
     print(response.json())
 
 def upload_department():
-    csv_location = f"app\data\departments.csv"
+    csv_location = f"app/data/departments.csv"
     url = "http://127.0.0.1:8000/upload-departments"
     column_names = ["id", "department"]
     departments = pd.read_csv(csv_location, names=column_names, header=None, index_col=None)
@@ -36,7 +36,7 @@ def upload_department():
     print(response.json())
 
 def upload_jobs():
-    csv_location = f"app\data\jobs.csv"
+    csv_location = f"app/data/jobs.csv"
     url = "http://127.0.0.1:8000/upload-jobs"
     column_names = ["id", "job"]
     employees = pd.read_csv(csv_location, names=column_names, header=None, index_col=None)

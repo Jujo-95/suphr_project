@@ -55,4 +55,7 @@ this project consists of an entire HR solution called suphr stands for "SUPER HU
     docker compose up --build
 
 ## 6 when succcess:
-    open explorer with the url localhost:8000
+    open explorer on url = localhost:8000
+
+## 7 check migration
+    docker exec -it postgres_db psql -U <user> -d <password> 

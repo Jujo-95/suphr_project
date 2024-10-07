@@ -16,6 +16,7 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - .:/app
+      - ./app/data:/app/data
     networks:
       - app_network
 

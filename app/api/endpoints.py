@@ -6,6 +6,7 @@ import pandas as pd
 import psycopg2
 from app.models.csv_schemas import DepartmentsCreate, EmployeeCreate, JobsCreate
 from app.db.connection import get_db
+from app.db.migrate_tables import upload_employees as migrate_upload_employees, upload_department as migrate_upload_department, upload_jobs as migrate_upload_jobs
 
 router = APIRouter()
 
@@ -15,6 +16,7 @@ def upload_employee(data: List[EmployeeCreate]):
     INSERT INTO employees (id, name, datetime, department_id, job_id) 
     VALUES (%s, %s, %s, %s, %s)
     """
+
     with get_db() as conn:
         with conn.cursor() as cursor:
             try :
@@ -34,8 +36,8 @@ def upload_employee(data: List[EmployeeCreate]):
             except Exception as e:
                 conn.rollback()
                 raise HTTPException(status_code=500, detail=str(e))
-    
-    return {"message" : "Employees uploadesd successfully"}
+    return data
+    #return {"message" : "Employees uploadesd successfully {}"}
 
 
 @router.post("/upload-departments/")
@@ -131,6 +133,22 @@ def get_hiring_kpi_report():
     hiring_kpi_results = df_kpi.to_dict(orient='records')
 
     return hiring_kpi_results
+
+@router.post('/run-local-migration/')
+def run_local_migration():
+
+    try:
+
+        migrate_upload_employees()
+        #migrate_upload_department()
+        #migrate_upload_jobs()
+
+        result = {"message":f"Migration run successfully"}
+        return result
+
+    except Exception as e:
+        result = {"message":f"{e}"}
+        return result
 
 
 
