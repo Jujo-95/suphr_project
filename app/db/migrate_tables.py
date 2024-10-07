@@ -21,7 +21,6 @@ def upload_employees():
     employees['datetime'] = employees['datetime'].fillna(pd.NaT).apply(lambda x: x.isoformat() if pd.notna(x) else '')
 
     employees_head = employees.to_dict(orient='records')
-    employees.to_json(orient='records',path_or_buf="output.json")
     print(len(employees_head))
     response = requests.post(url, json=employees_head)
     print(response.json())
