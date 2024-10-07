@@ -2,6 +2,7 @@ import os
 from typing import List
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
+import pandas as pd
 import psycopg2
 from app.models.csv_schemas import DepartmentsCreate, EmployeeCreate, JobsCreate
 from app.db.connection import get_db
@@ -83,4 +84,30 @@ def upload_jobs(data: List[JobsCreate]):
             except Exception as e:
                 conn.rollback()
                 raise HTTPException(status_code=500, detail="{e}")
+            
+@router.get('/employees-report/')
+def get_employees_report():
+
+    employees_report_query = ("""
+    SELECT d.department, j.job,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM e.datetime) = 1 THEN 1 ELSE 0 END) AS Q1,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM e.datetime) = 2 THEN 1 ELSE 0 END) AS Q2,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM e.datetime) = 3 THEN 1 ELSE 0 END) AS Q3,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM e.datetime) = 4 THEN 1 ELSE 0 END) AS Q4
+    FROM employees e
+    JOIN departments d ON e.department_id = d.id
+    JOIN jobs j ON e.job_id = j.id
+    WHERE EXTRACT(YEAR FROM e.datetime) = 2021
+    GROUP BY d.department, j.job
+    ORDER BY d.department, j.job
+    """)
+    with get_db() as conn:
+        df = pd.read_sql(employees_report_query, conn)
+
+    result = df.to_dict(orient="records")
+    print(result)
+        
+    return result
+
+
 
