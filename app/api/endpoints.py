@@ -16,28 +16,31 @@ def upload_employee(data: List[EmployeeCreate]):
     INSERT INTO employees (id, name, datetime, department_id, job_id) 
     VALUES (%s, %s, %s, %s, %s)
     """
-
+    
+    print('tis has been executed')
     with get_db() as conn:
         with conn.cursor() as cursor:
             try :
-                cursor.executemany(
-                    insert_employee_query, [
-                        (
+                for employee in data:
+                    query_values = (
                         employee.id,
                         employee.name,
                         employee.datetime,
                         employee.department_id,
                         employee.job_id,
                     )
-                        for employee in data
-                    ]
-                ) 
+                    cursor.execute(
+                        insert_employee_query,query_values
+                    ) 
+                print(cursor.mogrify(insert_employee_query, query_values).decode('utf-8'))
                 conn.commit()
+                return {"message" : "Employees uploadesd successfully {}"}
             except Exception as e:
                 conn.rollback()
-                raise HTTPException(status_code=500, detail=str(e))
-    return data
-    #return {"message" : "Employees uploadesd successfully {}"}
+                exeption = HTTPException(status_code=500, detail=str(e))
+                return {"message" : f"failed {exeption}"}
+            
+    
 
 
 @router.post("/upload-departments/")
@@ -140,8 +143,8 @@ def run_local_migration():
     try:
 
         migrate_upload_employees()
-        #migrate_upload_department()
-        #migrate_upload_jobs()
+        migrate_upload_department()
+        migrate_upload_jobs()
 
         result = {"message":f"Migration run successfully"}
         return result

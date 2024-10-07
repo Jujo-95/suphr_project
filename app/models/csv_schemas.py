@@ -1,14 +1,13 @@
 from pydantic import BaseModel
 from datetime import datetime
-
+from typing import Optional
 
 class EmployeeCreate(BaseModel):
-    id: float
+    id: int
     name: str
-    datetime: str
-    department_id: float
-    job_id: float
-
+    datetime: Optional[str]
+    department_id: int
+    job_id: int
 
 class DepartmentsCreate(BaseModel):
     id: int
