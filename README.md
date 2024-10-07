@@ -34,3 +34,25 @@ this project consists of an entire HR solution called suphr stands for "SUPER HU
 
 ## 7. run reports
     python .\app\scripts\generate_report.py        
+
+
+### Steps (Docker run)
+
+## prerequisites:
+    - docker Desktop (Windows) or docker app installed on linux
+    - git
+
+## Step 1. clone and enter the repo :
+    git clone "<this repo url>"
+    cd suphr_project
+
+## 2. create an .env file with the credentials of the postgresql database:
+    DATABASE_NAME="suphr_dev"
+    DATABASE_USER="<user>"
+    DATABASE_PASSWORD="<password>"
+
+## 5 build the app:
+    docker compose up --build
+
+## 6 when succcess:
+    open explorer with the url localhost:8000
