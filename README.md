@@ -1,5 +1,36 @@
 # suphr_project
-entire HR solution
+this project consists of an entire HR solution called suphr stands for "SUPER HUMAN RESOURCES"
 
-### to run the app:
+### Steps (local run)
+
+## prerequisites:
+    - Python
+    - postgresql 
+    - git
+
+## 1. create and activate a python venv:
+    python -m venv env
+    .\env\Scripts\activate
+
+## 2. clone and enter the repo :
+    git clone "<this repo url>"
+    cd suphr_project
+
+## 3. install requirements:
+    python -m pip install -r requirements.txt
+
+## 4. create an .env file with the credentials of the postgresql database:
+    DATABASE_HOST="localhost"
+    DATABASE_NAME="suphr_dev"
+    DATABASE_USER="<user>"
+    DATABASE_PASSWORD="<password>"
+
+## 5. run the app (at the root of the repo):
     python -m uvicorn app.main:app
+
+
+## 6. migrate csv files:
+    python .\app\db\migrate_tables.py
+
+## 7. run reports
+    python .\app\scripts\generate_report.py        
