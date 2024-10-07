@@ -109,5 +109,28 @@ def get_employees_report():
         
     return result
 
+@router.get('/hiring-kpi/')
+def get_hiring_kpi_report():
+    hiring_kpi_query = """
+    WITH department_hiring AS (
+        SELECT d.id, d.department, COUNT(e.id) AS hired
+        FROM employees e
+        JOIN departments d ON e.department_id = d.id
+        WHERE EXTRACT(YEAR FROM e.datetime) = 2021
+        GROUP BY d.id, d.department
+    )
+    SELECT id, department, hired
+    FROM department_hiring
+    WHERE hired > (SELECT AVG(hired) FROM department_hiring)
+    ORDER BY hired DESC
+    """
+
+    with get_db() as conn:
+        df_kpi = pd.read_sql(hiring_kpi_query,conn)
+
+    hiring_kpi_results = df_kpi.to_dict(orient='records')
+
+    return hiring_kpi_results
+
 
 
