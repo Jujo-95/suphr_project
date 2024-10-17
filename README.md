@@ -58,4 +58,4 @@ this project consists of an entire HR solution called suphr stands for "SUPER HU
     open explorer on url = localhost:8000
 
 ## 7 check migration
-    docker exec -it postgres_db psql -U <user> -d <password> 
+    docker exec -it postgres_db env PGPASSWORD=<password> psql -U postgres -d suphr_dev
